@@ -1,0 +1,24 @@
+apiVersion: ocs.openshift.io/v1
+kind: StorageCluster
+metadata:
+  name: storage-cluster
+  namespace: openshift-storage
+spec:
+  allowRemoteStorageConsumers: true
+  enableCephTools: false
+  encryption: {}
+  flexibleScaling: true
+  hostNetwork: false
+  manageNodes: true
+  storageDeviceSets:
+    - name: ocs-deviceset
+      count: 3
+      replica: 3
+      dataPVCTemplate:
+        spec:
+          storageClassName: local-vol-odf
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 120G
