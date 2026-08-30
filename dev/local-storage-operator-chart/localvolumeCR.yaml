@@ -17,4 +17,9 @@ spec:
     - storageClassName: "local-vol-odf"
       volumeMode: Block
       devicePaths:
-        - "/dev/sdb"
+        - "/dev/sdb1"
+    - storageClassName: "local-vol-mon"
+      volumeMode: Filesystem
+      fsType: xfs
+      devicePaths:
+        - "/dev/sdb2"
