@@ -9,6 +9,15 @@ spec:
   flexibleScaling: true
   hostNetwork: false
   manageNodes: true
+  monPVCTemplate:
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      volumeMode: Filesystem
+      resources:
+        requests:
+          storage: 59Gi
+      storageClassName: local-vol-mon
   storageDeviceSets:
     - name: ocs-deviceset
       count: 3
@@ -20,7 +29,7 @@ spec:
           volumeMode: Block
           resources:
             requests:
-              storage: 120Gi
+              storage: 60Gi   # adjust to match actual /dev/sdb2 size, must be <= partition size
           storageClassName: local-vol-odf
       placement: {}
       preparePlacement: {}
