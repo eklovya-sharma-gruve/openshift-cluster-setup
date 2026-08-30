@@ -1,4 +1,4 @@
-apiVersion: operator.coreos.com/v1
+apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
   name: cluster-logging-operatorgroup
