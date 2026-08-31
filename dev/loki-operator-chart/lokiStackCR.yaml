@@ -4,6 +4,7 @@ metadata:
   name: logging-loki
   namespace: openshift-logging
 spec:
+  storageClassName: storage-cluster-ceph-rbd
   size: 1x.extra-small
   storage:
     schemas:
