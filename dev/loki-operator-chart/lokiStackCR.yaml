@@ -11,7 +11,7 @@ spec:
       - effectiveDate: "2024-04-01"
         version: v13
     secret:
-      name: loki-bucket
+      name: logging-loki-s3
       type: s3
   tenants:
     mode: openshift-logging
