@@ -5,4 +5,4 @@ metadata:
   namespace: openshift-logging
 spec:
   generateBucketName: loki-
-  storageClassName: openshift-storage.ceph.rook.io/bucket
+  storageClassName: storage-cluster-ceph-rgw
