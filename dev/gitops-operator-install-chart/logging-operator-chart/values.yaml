@@ -1,3 +1,4 @@
+operators:
   - operator_name: cluster-logging
     operator_channel: stable-6.5
     operator_namespace: openshift-logging
