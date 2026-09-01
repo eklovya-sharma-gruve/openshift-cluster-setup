@@ -1,0 +1,25 @@
+apiVersion: local.storage.openshift.io/v1
+kind: LocalVolume
+metadata:
+  name: local-volume-odf
+  namespace: openshift-local-storage
+spec:
+  nodeSelector:
+    nodeSelectorTerms:
+    - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+            - ocp-nc-lab-ctrl1.gruveai.com
+            - ocp-nc-lab-ctrl2.gruveai.com
+            - ocp-nc-lab-ctrl3.gruveai.com
+  storageClassDevices:
+    - storageClassName: "local-vol-odf"
+      volumeMode: Block
+      devicePaths:
+        - "/dev/sdb1"
+    - storageClassName: "local-vol-mon"
+      volumeMode: Filesystem
+      fsType: xfs
+      devicePaths:
+        - "/dev/sdb2"
