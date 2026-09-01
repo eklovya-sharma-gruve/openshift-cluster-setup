@@ -1,0 +1,18 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-nginx-frontend-to-apache-backend
+  namespace: demo-app
+spec:
+  endpointSelector:
+    matchLabels:
+      app: apache-backend
+
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: nginx-frontend
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
