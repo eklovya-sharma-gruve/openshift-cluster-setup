@@ -1,23 +1,5 @@
 apiVersion: v2
-name: argo-gitops-chart
-version: 1.0.0
-description: A Helm chart for operator installations for day-2 openshift
-dependencies:
-  - name: local-storage-operator-chart
-    version: "1.0.0"
-    repository: "file://charts/local-storage-operator-chart"
-  - name: logging-operator-chart
-    version: 0.1.0
-    repository: "file://charts/logging-operator-chart"
-  - name: loki-operator-chart
-    version: 0.1.0
-    repository: "file://charts/loki-operator-chart"
-  - name: odf-operator-chart
-    version: 0.1.0
-    repository: "file://charts/odf-operator-chart"
-
-apiVersion: v2
-name: argo-gitops-chart
+name: odf-operator-chart
 description: A Helm chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
