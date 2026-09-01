@@ -1,0 +1,4 @@
+operators:
+  - operator_name: local-storage-operator
+    operator_channel: stable
+    operator_namespace: openshift-local-storage

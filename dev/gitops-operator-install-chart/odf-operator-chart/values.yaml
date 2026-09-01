@@ -1,0 +1,3 @@
+  - operator_name: odf-operator
+    operator_channel: stable-4.19
+    operator_namespace: openshift-storage
