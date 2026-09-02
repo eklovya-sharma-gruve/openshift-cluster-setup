@@ -4,7 +4,7 @@ metadata:
   name: storage-cluster
   namespace: openshift-storage
 spec:
-  enableCephTools: false
+  enableCephTools: true
   encryption: {}
   flexibleScaling: true
   hostNetwork: false
@@ -16,7 +16,7 @@ spec:
       volumeMode: Filesystem
       resources:
         requests:
-          storage: 59Gi
+          storage: 29Gi
       storageClassName: local-vol-mon
   storageDeviceSets:
     - name: ocs-deviceset
@@ -29,7 +29,7 @@ spec:
           volumeMode: Block
           resources:
             requests:
-              storage: 60Gi   # adjust to match actual /dev/sdb2 size, must be <= partition size
+              storage: 90Gi   # adjust to match actual /dev/sdb2 size, must be <= partition size
           storageClassName: local-vol-odf
       placement: {}
       preparePlacement: {}
