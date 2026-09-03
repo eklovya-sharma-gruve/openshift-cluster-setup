@@ -1,5 +1,5 @@
 operators:
-  - operator_name: cert-manager
+  - operator_name: openshift-cert-manager-operator
     operator_channel: stable-v1
     operator_namespace: cert-manager-operator
     all_namespace_scope: true
