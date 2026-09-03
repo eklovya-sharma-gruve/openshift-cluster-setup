@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/name: clife
   name: ciliumconfig
 spec:
-  k8sServiceHost: "api-int.ocp-nc-lab1.gruveai.com"
+  k8sServiceHost: "api-int.{{ .Values.cluster_name }}.gruveai.com"
   k8sServicePort: "6443"
   cluster:
     name: default
@@ -15,7 +15,9 @@ spec:
     mode: "cluster-pool"
     operator:
       clusterPoolIPv4PodCIDRList:
-      - "10.128.0.0/14"
+    {{- range .Values.pod_cidr }}
+      - {{ . | quote }}
+    {{ end }}
       clusterPoolIPv4MaskSize: 23
   cni:
     binPath: "/var/lib/cni/bin"
@@ -27,8 +29,18 @@ spec:
     enabled: true
     serviceMonitor:
      enabled: true
+  gatewayAPI:
+    enabled: {{ .Values.gatewayAPI_enabled }}
+  l2announcements:
+    enabled: {{ .Values.l2announcements_enabled }}
   hubble:
-    enabled: true
+    enabled: {{ .Values.hubble.enabled }}
+    relay:
+      enabled: {{ .Values.hubble.relay_enabled }}
+    timescape:
+      enabled: {{ .Values.hubble.timescape_enabled }}
+    ui:
+      enabled: {{ .Values.hubble.ui_enabled }}
   operator:
     prometheus:
       enabled: true
@@ -36,6 +48,25 @@ spec:
         enabled: true
   sessionAffinity: true
   kubeProxyReplacement: true
+  #####MASQUERADING CONFIG
+  ##this is to enable eBPF routing mode otherwise Linux default routing mode is present, and also it implements BPF masquerading mode. default is IP4 masquerading.
+  bpf:
+    masquerade: {{ .Values.masquerade_enabled }}
+    hostLegacyRouting: {{ .Values.hostRouting_enabled }}
+  ##### by default it is enabled and to disable masquerading we have to put false for it
+  enableIPv4Masquerade: {{ .Values.masquerade_enabled }}
+  ipMasqAgent:
+    enabled: {{ .Values.enable_masq_agent }}
+
+  routing-mode: {{ .Values.routing_mode }}
+  ipv4-native-routing-cidr:
+  {{- range .Values.ipv4_routing_cidr }}
+    - {{ . | quote }}
+  {{ end }}
+  ipv6-native-routing-cidr:
+  {{- range .Values.ipv6_routing_cidr }}
+    - {{ . | quote }}
+  {{ end }}
   # avoid conflicts
   clusterHealthPort: 9940
   # OVN Kubernetes default port, firewalls may already be configured for it
@@ -43,4 +74,6 @@ spec:
   enterprise:
     featureGate:
       approved:
-      - CNIChainingMode
+    {{- range .Values.features }}
+      - {{ . }}
+    {{ end }}

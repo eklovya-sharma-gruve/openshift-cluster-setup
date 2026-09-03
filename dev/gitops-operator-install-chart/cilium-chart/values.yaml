@@ -1,0 +1,37 @@
+cluster_name: ocp-nc-lab1
+pod_cidr:
+  - 10.128.0.0/14
+  - 10.6.4.5
+
+
+masquerade_enabled: true
+hostRouting_enabled: false
+enable_masq_agent: true
+routing_mode: tunnel
+
+
+
+ipv4_routing_cidr:
+  - 10.128.0.0/14
+ipv6_routing_cidr:
+  - 10.128.0.0/14
+
+
+features:
+  - CNIChainingMode
+  - HubbleTimescape
+  - GatewayAPI
+  - L2Announcement
+
+
+
+hubble:
+  enabled: true
+  relay_enabled: true
+  timescape_enabled: true
+  ui_enabled: true
+
+
+
+gatewayAPI_enabled: true
+l2announcements_enabled: true
