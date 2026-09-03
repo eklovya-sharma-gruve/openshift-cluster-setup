@@ -1,0 +1,4 @@
+operators:
+  - operator_name: cluster-observability-operator
+    operator_channel: stable
+    operator_namespace: openshift-local-storage
