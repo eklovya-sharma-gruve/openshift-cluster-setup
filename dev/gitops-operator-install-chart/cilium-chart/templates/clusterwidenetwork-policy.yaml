@@ -1,0 +1,27 @@
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: cluster-egress-dns-github
+spec:
+  endpointSelector: {}
+  egress:
+    # Allow DNS queries to OpenShift DNS
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: openshift-dns
+      toPorts:
+        - ports:
+            - port: "5353"
+              protocol: UDP
+            - port: "5353"
+              protocol: TCP
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toFQDNs:
+        - matchName: "github.com"
+        - matchPattern: "*.github.com"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
