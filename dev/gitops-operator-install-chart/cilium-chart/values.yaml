@@ -3,9 +3,9 @@ pod_cidr:
   - 10.128.0.0/14
 
 
-masquerade_enabled: true
-hostRouting_enabled: false
-enable_masq_agent: true
+masquerade_enabled: false
+hostRouting_enabled: true
+enable_masq_agent: false
 routing_mode: tunnel
 
 
