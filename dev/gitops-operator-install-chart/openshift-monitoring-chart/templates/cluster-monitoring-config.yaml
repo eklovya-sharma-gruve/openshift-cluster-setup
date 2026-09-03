@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+data:
+  config.yaml: |-
+    prometheusK8s:
+      collectionProfile: full
+      logLevel: error
+      # Maximum size of Prometheus TSDB data.
+      # Keep below the 40Gi PVC to leave filesystem/WAL/headroom.
+      retention: 24h
+      retentionSize: 12GB
+      enforcedBodySizeLimit: 40MB
+      volumeClaimTemplate:
+        spec:
+          storageClassName: storage-cluster-ceph-rbd
+          resources:
+            requests:
+              storage: 15Gi
+      # resources:
+      #   requests:
+      #     cpu: 100m
+      #     memory: 512Mi
+      #   limits:
+      #     cpu: 500m
+      #     memory: 2Gi
+    alertmanagerMain:
+      logLevel: error
+      volumeClaimTemplate:
+        spec:
+          storageClassName: storage-cluster-ceph-rbd
+          resources:
+            requests:
+              storage: 5Gi
+      # resources:
+      #   requests:
+      #     cpu: 50m
+      #     memory: 128Mi
+      #   limits:
+      #     cpu: 250m
+      #     memory: 512Mi
+    thanosQuerier:
+      logLevel: error
+      # resources:
+      #   requests:
+      #     cpu: 50m
+      #     memory: 256Mi
+      #   limits:
+      #     cpu: 250m
+      #     memory: 512Mi
+    prometheusOperator:
+      logLevel: error
+      # resources:
+      #   requests:
+      #     cpu: 50m
+      #     memory: 128Mi
+      #   limits:
+      #     cpu: 250m
+      #     memory: 512Mi
+    metricsServer:
+      audit:
+        profile: metadata
+      # resources:
+      #   requests:
+      #     cpu: 10m
+      #     memory: 50Mi
+      #   limits:
+      #     cpu: 50m
+      #     memory: 250Mi
+    kubeStateMetrics:
+      # resources:
+      #   requests:
+      #     cpu: 50m
+      #     memory: 128Mi
+      #   limits:
+      #     cpu: 250m
+      #     memory: 512Mi
+    telemeterClient:
+      # resources:
+      #   requests:
+      #     cpu: 50m
+      #     memory: 128Mi
+      #   limits:
+      #     cpu: 250m
+      #     memory: 512Mi
+    openshiftStateMetrics:
+      # resources:
+      #   requests:
+      #     cpu: 50m
+      #     memory: 128Mi
+      #   limits:
+      #     cpu: 250m
+      #     memory: 512Mi
+    nodeExporter:
+      # resources:
+      #   requests:
+      #     cpu: 20m
+      #     memory: 50Mi
+      #   limits:
+      #     cpu: 50m
+      #     memory: 150Mi
+    monitoringPlugin:
+      # resources:
+      #   requests:
+      #     cpu: 50m
+      #     memory: 128Mi
+      #   limits:
+      #     cpu: 250m
+      #     memory: 512Mi
+    prometheusOperatorAdmissionWebhook:
+      # resources:
+      #   requests:
+      #     cpu: 20m
+      #     memory: 50Mi
+      #   limits:
+      #     cpu: 50m
+      #     memory: 100Mi
