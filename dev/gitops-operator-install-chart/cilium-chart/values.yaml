@@ -1,7 +1,6 @@
 cluster_name: ocp-nc-lab1
 pod_cidr:
   - 10.128.0.0/14
-  - 10.6.4.5
 
 
 masquerade_enabled: true
