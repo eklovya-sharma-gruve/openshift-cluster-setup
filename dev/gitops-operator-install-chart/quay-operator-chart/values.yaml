@@ -1,0 +1,5 @@
+operators:
+  - operator_name: quay-operator
+    operator_channel: stable-3.17
+    operator_namespace: openshift-operators
+    all_namespace_scope: true

@@ -1,0 +1,5 @@
+operators:
+  - operator_name: rhacs-operator
+    operator_channel: stable
+    operator_namespace:  rhacs-operator
+    all_namespace_scope: true

@@ -1,0 +1,5 @@
+operators:
+  - operator_name: servicemeshoperator
+    operator_channel: stable
+    operator_namespace:  openshift-operators
+    all_namespace_scope: true

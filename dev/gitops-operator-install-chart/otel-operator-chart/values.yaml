@@ -1,0 +1,5 @@
+operators:
+  - operator_name: opentelemetry-product
+    operator_channel: stable
+    operator_namespace:  openshift-opentelemetry-operator
+    all_namespace_scope: true
