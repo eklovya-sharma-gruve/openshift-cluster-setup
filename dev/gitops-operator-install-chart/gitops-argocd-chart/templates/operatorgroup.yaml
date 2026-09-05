@@ -12,7 +12,7 @@ spec:
   {}
 {{ else }}
   targetNamespaces:
-    - {{ .operator_namespace | quote }}
+    - {{ .operator_namespace }}
 {{ end }}
 ---
 {{ end }}
