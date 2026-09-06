@@ -51,7 +51,7 @@ spec:
   #####MASQUERADING CONFIG
   ##this is to enable eBPF routing mode otherwise Linux default routing mode is present, and also it implements BPF masquerading mode. default is IP4 masquerading.
   bpf:
-    masquerade: {{ .Values.masquerade_enabled }}
+    masquerade: {{ .Values.masquerade_bpf_enabled }}
     hostLegacyRouting: {{ .Values.hostRouting_enabled }}
   ##### by default it is enabled and to disable masquerading we have to put false for it
   enableIPv4Masquerade: {{ .Values.masquerade_enabled }}
