@@ -8,7 +8,11 @@ metadata:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     argocd.argoproj.io/sync-wave: "0"
 spec:
+{{ if .all_namespace_scope }}
+  {}
+{{ else }}
   targetNamespaces:
     - {{ .operator_namespace }}
+{{ end }}
 ---
 {{ end }}

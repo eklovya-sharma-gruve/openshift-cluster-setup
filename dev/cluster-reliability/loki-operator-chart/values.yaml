@@ -1,0 +1,5 @@
+operators:
+  - operator_name: loki-operator
+    operator_channel: stable-6.5
+    operator_namespace: openshift-operators-redhat
+    all_namespace_scope: true
