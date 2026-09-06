@@ -1,0 +1,60 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: monitoring-storage-alerts
+  namespace: openshift-monitoring
+  labels:
+    app.kubernetes.io/name: monitoring-storage-alerts
+spec:
+  groups:
+    - name: monitoring-storage
+      rules:
+
+        - alert: MonitoringPVCAlmostFull
+          expr: |
+            (
+              kubelet_volume_stats_used_bytes{
+                namespace="openshift-monitoring"
+              }
+              /
+              kubelet_volume_stats_capacity_bytes{
+                namespace="openshift-monitoring"
+              }
+            ) * 100 > 80
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Monitoring PVC is almost full"
+            description: "PVC {{ $labels.persistentvolumeclaim }} in {{ $labels.namespace }} is more than 80% full."
+
+        - alert: MonitoringPVCCritical
+          expr: |
+            (
+              kubelet_volume_stats_used_bytes{
+                namespace="openshift-monitoring"
+              }
+              /
+              kubelet_volume_stats_capacity_bytes{
+                namespace="openshift-monitoring"
+              }
+            ) * 100 > 90
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Monitoring PVC is critically full"
+            description: "PVC {{ $labels.persistentvolumeclaim }} in {{ $labels.namespace }} is more than 90% full."
+
+        - alert: MonitoringPVCUnavailable
+          expr: |
+            kube_persistentvolumeclaim_status_phase{
+              namespace="openshift-monitoring",
+              phase="Bound"
+            } == 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Monitoring PVC is not Bound"
+            description: "PVC {{ $labels.persistentvolumeclaim }} in openshift-monitoring is not Bound."
