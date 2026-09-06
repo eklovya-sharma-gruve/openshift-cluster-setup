@@ -41,6 +41,17 @@ spec:
       enabled: {{ .Values.hubble.timescape_enabled }}
     ui:
       enabled: {{ .Values.hubble.ui_enabled }}
+    metrics:
+      enabled:
+        - flow
+        - dns
+        - drop
+        - tcp
+        - icmp
+        - port-distribution
+      serviceMonitor:
+        enabled: true
+        interval: 30s
   operator:
     prometheus:
       enabled: true
