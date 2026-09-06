@@ -11,11 +11,11 @@ data:
       # Maximum size of Prometheus TSDB data.
       # Keep below the 40Gi PVC to leave filesystem/WAL/headroom.
       retention: 24h
-      retentionSize: 12GB
+      retentionSize: 10GB
       enforcedBodySizeLimit: 40MB
       volumeClaimTemplate:
         spec:
-          storageClassName: storage-cluster-ceph-rbd
+          storageClassName: lvms-lvm-vg1
           resources:
             requests:
               storage: 15Gi
@@ -30,7 +30,7 @@ data:
       logLevel: error
       volumeClaimTemplate:
         spec:
-          storageClassName: storage-cluster-ceph-rbd
+          storageClassName: lvms-lvm-vg1
           resources:
             requests:
               storage: 5Gi
