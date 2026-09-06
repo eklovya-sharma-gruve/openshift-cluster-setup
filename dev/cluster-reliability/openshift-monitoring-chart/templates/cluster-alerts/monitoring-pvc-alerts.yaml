@@ -1,13 +1,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: monitoring-storage-alerts
+  name: monitoring-pvc-alerts
   namespace: openshift-monitoring
   labels:
-    app.kubernetes.io/name: monitoring-storage-alerts
+    app.kubernetes.io/name: cluster-monitoring
+    prometheus: k8s
+    role: alert-rules
 spec:
   groups:
-    - name: monitoring-storage
+    - name: monitoring-pvc
       rules:
 
         - alert: MonitoringPVCAlmostFull
@@ -21,12 +23,12 @@ spec:
                 namespace="openshift-monitoring"
               }
             ) * 100 > 80
-          for: 15m
+          for: 10m
           labels:
             severity: warning
           annotations:
-            summary: "Monitoring PVC is almost full"
-            description: "PVC {{ $labels.persistentvolumeclaim }} in {{ $labels.namespace }} is more than 80% full."
+            summary: "Monitoring PVC usage is high"
+            description: "PVC {{ $labels.persistentvolumeclaim }} in namespace {{ $labels.namespace }} is more than 80% full."
 
         - alert: MonitoringPVCCritical
           expr: |
@@ -39,19 +41,31 @@ spec:
                 namespace="openshift-monitoring"
               }
             ) * 100 > 90
-          for: 10m
+          for: 5m
           labels:
             severity: critical
           annotations:
             summary: "Monitoring PVC is critically full"
-            description: "PVC {{ $labels.persistentvolumeclaim }} in {{ $labels.namespace }} is more than 90% full."
+            description: "PVC {{ $labels.persistentvolumeclaim }} in namespace {{ $labels.namespace }} is more than 90% full."
 
-        - alert: MonitoringPVCUnavailable
+        - alert: MonitoringPVCAlmostOutOfSpace
+          expr: |
+            kubelet_volume_stats_available_bytes{
+              namespace="openshift-monitoring"
+            } < 2 * 1024 * 1024 * 1024
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Monitoring PVC has less than 2GiB available"
+            description: "PVC {{ $labels.persistentvolumeclaim }} has less than 2GiB of available space."
+
+        - alert: MonitoringPVCNotBound
           expr: |
             kube_persistentvolumeclaim_status_phase{
               namespace="openshift-monitoring",
-              phase="Bound"
-            } == 0
+              phase!="Bound"
+            } == 1
           for: 10m
           labels:
             severity: critical

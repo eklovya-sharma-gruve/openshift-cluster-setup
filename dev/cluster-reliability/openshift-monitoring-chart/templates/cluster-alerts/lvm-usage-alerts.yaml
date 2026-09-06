@@ -4,16 +4,14 @@ metadata:
   name: lvm-usage-alerts
   namespace: openshift-monitoring
   labels:
+    app.kubernetes.io/name: cluster-monitoring
     prometheus: k8s
     role: alert-rules
 spec:
   groups:
-    - name: lvm-usage
-      interval: 30s
+    - name: topolvm-usage
       rules:
-        # --------------------------------------------------------
-        # Thin pool DATA
-        # --------------------------------------------------------
+
         - alert: LVMThinPoolDataHigh
           expr: |
             topolvm_thinpool_data_percent{
@@ -24,7 +22,7 @@ spec:
             severity: warning
           annotations:
             summary: "LVM thin pool data usage is high"
-            description: "LVM thin pool {{ $labels.device_class }} on {{ $labels.node }} is above 80% data utilization."
+            description: "LVM thin pool {{ $labels.device_class }} on {{ $labels.node }} is more than 80% used."
 
         - alert: LVMThinPoolDataCritical
           expr: |
@@ -36,37 +34,33 @@ spec:
             severity: critical
           annotations:
             summary: "LVM thin pool data usage is critical"
-            description: "LVM thin pool {{ $labels.device_class }} on {{ $labels.node }} is above 90% data utilization."
-        # --------------------------------------------------------
-        # Thin pool METADATA
-        # --------------------------------------------------------
+            description: "LVM thin pool {{ $labels.device_class }} on {{ $labels.node }} is more than 90% used."
+
         - alert: LVMThinPoolMetadataHigh
           expr: |
             topolvm_thinpool_metadata_percent{
               device_class="lvm-vg1"
-            } > 70
+            } > 80
           for: 10m
           labels:
             severity: warning
           annotations:
             summary: "LVM thin pool metadata usage is high"
-            description: "LVM thin pool metadata on {{ $labels.node }} is above 70%."
+            description: "LVM thin pool metadata on {{ $labels.node }} is more than 80% used."
 
         - alert: LVMThinPoolMetadataCritical
           expr: |
             topolvm_thinpool_metadata_percent{
               device_class="lvm-vg1"
-            } > 85
+            } > 90
           for: 5m
           labels:
             severity: critical
           annotations:
             summary: "LVM thin pool metadata usage is critical"
-            description: "LVM thin pool metadata on {{ $labels.node }} is above 85%."
-        # --------------------------------------------------------
-        # Volume Group FREE SPACE
-        # --------------------------------------------------------
-        - alert: LVMVolumeGroupSpaceLow
+            description: "LVM thin pool metadata on {{ $labels.node }} is more than 90% used."
+
+        - alert: LVMVolumeGroupLowSpace
           expr: |
             (
               topolvm_volumegroup_available_bytes{
@@ -81,9 +75,10 @@ spec:
           labels:
             severity: warning
           annotations:
-            summary: "LVM volume group free space is low"
-            description: "LVM volume group {{ $labels.device_class }} on {{ $labels.node }} has less than 20% free capacity."
-        - alert: LVMVolumeGroupSpaceCritical
+            summary: "LVM volume group has low free space"
+            description: "LVM volume group {{ $labels.device_class }} on {{ $labels.node }} has less than 20% free space."
+
+        - alert: LVMVolumeGroupCriticalSpace
           expr: |
             (
               topolvm_volumegroup_available_bytes{
@@ -98,19 +93,5 @@ spec:
           labels:
             severity: critical
           annotations:
-            summary: "LVM volume group free space is critical"
-            description: "LVM volume group {{ $labels.device_class }} on {{ $labels.node }} has less than 10% free capacity."
-        # --------------------------------------------------------
-        # Thin pool overprovisioning
-        # --------------------------------------------------------
-        - alert: LVMThinPoolOverprovisioningExhausted
-          expr: |
-            topolvm_thinpool_overprovisioned_available{
-              device_class="lvm-vg1"
-            } < 0
-          for: 5m
-          labels:
-            severity: critical
-          annotations:
-            summary: "LVM thin pool overprovisioning exhausted"
-            description: "LVM thin pool {{ $labels.device_class }} on {{ $labels.node }} has exhausted its available overprovisioned capacity."
+            summary: "LVM volume group critically low on space"
+            description: "LVM volume group {{ $labels.device_class }} on {{ $labels.node }} has less than 10% free space."

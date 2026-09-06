@@ -1,14 +1,102 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: nc-cluster-node-alerts
+  name: nc-lab1-node-monitoring-alerts
   namespace: openshift-monitoring
   labels:
-    app.kubernetes.io/name: custom-node-alerts
+    app.kubernetes.io/name: cluster-monitoring
+    prometheus: k8s
+    role: alert-rules
 spec:
   groups:
-    - name: node-health
+    - name: node-monitoring
       rules:
+
+        - alert: NodeCPUHigh
+          expr: |
+            100 - (
+              avg by (instance) (
+                rate(node_cpu_seconds_total{mode="idle"}[5m])
+              ) * 100
+            ) > 85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High CPU usage on node"
+            description: "Node {{ $labels.instance }} has CPU usage above 85% for more than 10 minutes."
+
+        - alert: NodeMemoryHigh
+          expr: |
+            (
+              1 -
+              node_memory_MemAvailable_bytes /
+              node_memory_MemTotal_bytes
+            ) * 100 > 85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High memory usage on node"
+            description: "Node {{ $labels.instance }} has memory usage above 85% for more than 10 minutes."
+
+        - alert: NodeMemoryCritical
+          expr: |
+            (
+              1 -
+              node_memory_MemAvailable_bytes /
+              node_memory_MemTotal_bytes
+            ) * 100 > 95
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Critical memory usage on node"
+            description: "Node {{ $labels.instance }} has memory usage above 95% for more than 5 minutes."
+
+        - alert: NodeFilesystemAlmostFull
+          expr: |
+            (
+              node_filesystem_size_bytes{
+                fstype!~"tmpfs|overlay|squashfs"
+              }
+              -
+              node_filesystem_avail_bytes{
+                fstype!~"tmpfs|overlay|squashfs"
+              }
+            )
+            /
+            node_filesystem_size_bytes{
+              fstype!~"tmpfs|overlay|squashfs"
+            } * 100 > 85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Node filesystem usage is high"
+            description: "Filesystem {{ $labels.mountpoint }} on {{ $labels.instance }} is above 85% used."
+
+        - alert: NodeFilesystemCritical
+          expr: |
+            (
+              node_filesystem_size_bytes{
+                fstype!~"tmpfs|overlay|squashfs"
+              }
+              -
+              node_filesystem_avail_bytes{
+                fstype!~"tmpfs|overlay|squashfs"
+              }
+            )
+            /
+            node_filesystem_size_bytes{
+              fstype!~"tmpfs|overlay|squashfs"
+            } * 100 > 95
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Node filesystem critically full"
+            description: "Filesystem {{ $labels.mountpoint }} on {{ $labels.instance }} is above 95% used."
 
         - alert: NodeNotReady
           expr: |
@@ -20,166 +108,15 @@ spec:
           labels:
             severity: critical
           annotations:
-            summary: "Kubernetes node is not Ready"
-            description: "Node {{ $labels.node }} has been NotReady for more than 5 minutes."
+            summary: "Node is not Ready"
+            description: "Kubernetes node {{ $labels.node }} has been NotReady for more than 5 minutes."
 
-        - alert: NodeMemoryPressure
+        - alert: KubeletDown
           expr: |
-            kube_node_status_condition{
-              condition="MemoryPressure",
-              status="true"
-            } == 1
+            absent(up{job=~".*kubelet.*"})
           for: 5m
           labels:
             severity: critical
           annotations:
-            summary: "Node has memory pressure"
-            description: "Node {{ $labels.node }} is reporting MemoryPressure."
-
-        - alert: NodeDiskPressure
-          expr: |
-            kube_node_status_condition{
-              condition="DiskPressure",
-              status="true"
-            } == 1
-          for: 5m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Node has disk pressure"
-            description: "Node {{ $labels.node }} is reporting DiskPressure."
-
-        - alert: NodePIDPressure
-          expr: |
-            kube_node_status_condition{
-              condition="PIDPressure",
-              status="true"
-            } == 1
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: "Node has PID pressure"
-            description: "Node {{ $labels.node }} is reporting PIDPressure."
-
-    - name: node-resources
-      rules:
-
-        - alert: NodeHighCPU
-          expr: |
-            100 * (
-              1 - avg by (instance) (
-                rate(node_cpu_seconds_total{
-                  mode="idle"
-                }[5m])
-              )
-            ) > 85
-          for: 15m
-          labels:
-            severity: warning
-          annotations:
-            summary: "High CPU utilization on node"
-            description: "Node {{ $labels.instance }} CPU utilization has been above 85% for 15 minutes."
-
-        - alert: NodeCriticalCPU
-          expr: |
-            100 * (
-              1 - avg by (instance) (
-                rate(node_cpu_seconds_total{
-                  mode="idle"
-                }[5m])
-              )
-            ) > 95
-          for: 10m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Critical CPU utilization on node"
-            description: "Node {{ $labels.instance }} CPU utilization has been above 95% for 10 minutes."
-
-        - alert: NodeHighMemory
-          expr: |
-            100 * (
-              1 -
-              node_memory_MemAvailable_bytes
-              /
-              node_memory_MemTotal_bytes
-            ) > 85
-          for: 10m
-          labels:
-            severity: warning
-          annotations:
-            summary: "High memory utilization on node"
-            description: "Node {{ $labels.instance }} memory utilization has been above 85% for 10 minutes."
-
-        - alert: NodeCriticalMemory
-          expr: |
-            100 * (
-              1 -
-              node_memory_MemAvailable_bytes
-              /
-              node_memory_MemTotal_bytes
-            ) > 95
-          for: 10m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Critical memory utilization on node"
-            description: "Node {{ $labels.instance }} memory utilization has been above 95% for 10 minutes."
-
-    - name: node-filesystem
-      rules:
-
-        - alert: NodeFilesystemAlmostFull
-          expr: |
-            100 * (
-              1 -
-              node_filesystem_avail_bytes{
-                mountpoint="/",
-                fstype!~"tmpfs|overlay"
-              }
-              /
-              node_filesystem_size_bytes{
-                mountpoint="/",
-                fstype!~"tmpfs|overlay"
-              }
-            ) > 80
-          for: 15m
-          labels:
-            severity: warning
-          annotations:
-            summary: "Node root filesystem almost full"
-            description: "Root filesystem on {{ $labels.instance }} is above 80%."
-
-        - alert: NodeFilesystemCritical
-          expr: |
-            100 * (
-              1 -
-              node_filesystem_avail_bytes{
-                mountpoint="/",
-                fstype!~"tmpfs|overlay"
-              }
-              /
-              node_filesystem_size_bytes{
-                mountpoint="/",
-                fstype!~"tmpfs|overlay"
-              }
-            ) > 90
-          for: 10m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Node root filesystem critically full"
-            description: "Root filesystem on {{ $labels.instance }} is above 90%."
-
-        - alert: NodeFilesystemReadOnly
-          expr: |
-            node_filesystem_readonly{
-              mountpoint="/"
-            } == 1
-          for: 5m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Node filesystem is read-only"
-            description: "Root filesystem on {{ $labels.instance }} is mounted read-only."
+            summary: "Kubelet metrics unavailable"
+            description: "Kubelet metrics are not available to Prometheus."
