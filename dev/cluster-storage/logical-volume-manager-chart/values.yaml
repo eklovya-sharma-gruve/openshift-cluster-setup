@@ -1,5 +1,5 @@
 operators:
   - operator_name: lvms-operator
     operator_channel: stable-4.19
-    operator_namespace: openshfit-storage
+    operator_namespace: openshift-storage
     all_namespace_scope: false
