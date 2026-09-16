@@ -6,6 +6,23 @@ metadata:
 data:
   config.yaml: |-
     prometheusK8s:
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: prometheus
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: prometheus
       collectionProfile: full
       logLevel: error
       # Maximum size of Prometheus TSDB data.
@@ -34,6 +51,23 @@ data:
           resources:
             requests:
               storage: 5Gi
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: prometheus
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: prometheus
       # resources:
       #   requests:
       #     cpu: 50m
@@ -43,6 +77,23 @@ data:
       #     memory: 512Mi
     thanosQuerier:
       logLevel: error
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: prometheus
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: prometheus
       # resources:
       #   requests:
       #     cpu: 50m
@@ -52,6 +103,23 @@ data:
       #     memory: 512Mi
     prometheusOperator:
       logLevel: error
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: prometheus
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: prometheus
       # resources:
       #   requests:
       #     cpu: 50m

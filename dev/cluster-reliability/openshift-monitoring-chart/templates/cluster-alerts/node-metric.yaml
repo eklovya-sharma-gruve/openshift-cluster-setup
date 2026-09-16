@@ -25,7 +25,6 @@ spec:
           annotations:
             summary: "High CPU usage on node"
             description: "Node {{ "{{ $labels.instance }}" }} has CPU usage above 85% for more than 10 minutes."
-
         - alert: NodeMemoryHigh
           expr: |
             (
@@ -39,7 +38,6 @@ spec:
           annotations:
             summary: "High memory usage on node"
             description: "Node {{ "{{ $labels.instance }}" }} has memory usage above 85% for more than 10 minutes."
-
         - alert: NodeMemoryCritical
           expr: |
             (
@@ -53,7 +51,6 @@ spec:
           annotations:
             summary: "Critical memory usage on node"
             description: "Node {{ "{{ $labels.instance }}" }} has memory usage above 95% for more than 5 minutes."
-
         - alert: NodeFilesystemAlmostFull
           expr: |
             (
