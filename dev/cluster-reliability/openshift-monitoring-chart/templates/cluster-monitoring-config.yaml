@@ -8,14 +8,6 @@ data:
     prometheusK8s:
       nodeSelector:
         node-role.kubernetes.io/infra: ""
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchLabels:
-                  app: prometheus
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
@@ -53,14 +45,6 @@ data:
               storage: 5Gi
       nodeSelector:
         node-role.kubernetes.io/infra: ""
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchLabels:
-                  app: prometheus
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
@@ -79,14 +63,6 @@ data:
       logLevel: error
       nodeSelector:
         node-role.kubernetes.io/infra: ""
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchLabels:
-                  app: prometheus
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
@@ -105,14 +81,6 @@ data:
       logLevel: error
       nodeSelector:
         node-role.kubernetes.io/infra: ""
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchLabels:
-                  app: prometheus
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
