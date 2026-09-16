@@ -1,5 +1,5 @@
 operators:
   - operator_name: grafana-operator
     operator_channel: v5
-    operator_namespace: openshift-operators
-    all_namespace_scope: true
+    operator_namespace: grafana-operator
+    all_namespace_scope: false
