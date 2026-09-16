@@ -10,7 +10,7 @@ metadata:
 spec:
   channel: "{{ .operator_channel }}"
   name: "{{ .operator_name }}"
-  source: "redhat-operators"
+  source: "community-operators"
   installPlanApproval: "Automatic"
   sourceNamespace: "openshift-marketplace"
 ---
