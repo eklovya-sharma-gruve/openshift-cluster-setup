@@ -25,6 +25,6 @@ spec:
 
                   oc create secret generic grafana-prometheus-token \
                     -n grafana-operator \
-                    --from-literal=authorization="Bearer ${TOKEN}" \
+                    --from-literal=authorization="${TOKEN}" \
                     --dry-run=client -o yaml |
                     oc apply -f -

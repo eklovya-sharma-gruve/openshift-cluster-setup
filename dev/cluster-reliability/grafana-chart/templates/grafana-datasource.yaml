@@ -23,4 +23,4 @@ spec:
       tlsSkipVerify: true
       timeInterval: 5s
     secureJsonData:
-      httpHeaderValue1: ${authorization}
+      httpHeaderValue1: "Bearer ${authorization}"
