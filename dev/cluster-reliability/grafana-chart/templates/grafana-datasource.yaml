@@ -1,23 +1,26 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
-  name: valuesfrom-test
+  name: prometheus
   namespace: grafana-operator
 spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
-
   valuesFrom:
-    - targetPath: basicAuthUser
+    - targetPath: "secureJsonData.httpHeaderValue1"
       valueFrom:
         secretKeyRef:
           name: grafana-prometheus-token
           key: authorization
-
   datasource:
-    name: valuesfrom-test
+    name: prom1
     type: prometheus
-    access: proxy
     url: https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091
-    isDefault: false
+    isDefault: true
+    jsonData:
+      httpHeaderName1: Authorization
+      tlsSkipVerify: true
+      timeInterval: 5s
+    secureJsonData:
+      httpHeaderValue1: ${authorization}
