@@ -7,13 +7,19 @@ spec:
   instanceSelector:
     matchLabels:
       dashboards: "grafana"
+  valuesFrom:
+    - targetPath: secureJsonData.httpHeaderValue1
+      valueFrom:
+        secretKeyRef:
+          name: grafana-sa-token
+          key: token
   datasource:
     name: prom1
     type: prometheus
     url: https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091
     isDefault: true
     secureJsonData:
-      httpHeaderValue1: $__file{/var/run/secrets/prometheus/token}
+      httpHeaderValue1: "Bearer ${token}"
     jsonData:
       httpHeaderName1: Authorization
       timeInterval: 5s
