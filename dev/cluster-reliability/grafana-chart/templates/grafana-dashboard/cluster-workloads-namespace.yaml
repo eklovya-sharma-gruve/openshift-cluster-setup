@@ -1,20 +1,23 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: ocp-cluster-overview
+  name: ocp-workloads
   namespace: grafana-operator
 spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
+
   folder: OpenShift Monitoring
+
   datasources:
     - inputName: DS_PROMETHEUS
       datasourceName: prom1
+
   json: |
     {
-      "title": "OCP - Cluster Overview",
-      "uid": "ocp-cluster-overview",
+      "title": "OCP - Workloads",
+      "uid": "ocp-workloads",
       "timezone": "browser",
       "schemaVersion": 39,
       "refresh": "30s",
@@ -25,7 +28,7 @@ spec:
       "panels": [
         {
           "id": 1,
-          "title": "Nodes",
+          "title": "Namespaces",
           "type": "stat",
           "datasource": {
             "type": "prometheus",
@@ -40,18 +43,13 @@ spec:
           "targets": [
             {
               "refId": "A",
-              "expr": "count(kube_node_info)"
+              "expr": "count(kube_namespace_created)"
             }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "unit": "short"
-            }
-          }
+          ]
         },
         {
           "id": 2,
-          "title": "Ready Nodes",
+          "title": "Deployments",
           "type": "stat",
           "datasource": {
             "type": "prometheus",
@@ -66,31 +64,13 @@ spec:
           "targets": [
             {
               "refId": "A",
-              "expr": "count(kube_node_status_condition{condition=\"Ready\",status=\"true\"})"
+              "expr": "count(kube_deployment_created)"
             }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "unit": "short",
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": 0
-                  },
-                  {
-                    "color": "green",
-                    "value": 1
-                  }
-                ]
-              }
-            }
-          }
+          ]
         },
         {
           "id": 3,
-          "title": "Namespaces",
+          "title": "DaemonSets",
           "type": "stat",
           "datasource": {
             "type": "prometheus",
@@ -105,13 +85,13 @@ spec:
           "targets": [
             {
               "refId": "A",
-              "expr": "count(kube_namespace_created)"
+              "expr": "count(kube_daemonset_created)"
             }
           ]
         },
         {
           "id": 4,
-          "title": "Pods",
+          "title": "StatefulSets",
           "type": "stat",
           "datasource": {
             "type": "prometheus",
@@ -126,20 +106,20 @@ spec:
           "targets": [
             {
               "refId": "A",
-              "expr": "count(kube_pod_info)"
+              "expr": "count(kube_statefulset_created)"
             }
           ]
         },
         {
           "id": 5,
-          "title": "CPU Usage",
+          "title": "CPU Usage by Namespace",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
             "uid": "prom1"
           },
           "gridPos": {
-            "h": 8,
+            "h": 9,
             "w": 12,
             "x": 0,
             "y": 5
@@ -147,28 +127,26 @@ spec:
           "targets": [
             {
               "refId": "A",
-              "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])))",
-              "legendFormat": "Cluster CPU"
+              "expr": "sum by(namespace) (rate(container_cpu_usage_seconds_total{container!=\"\",container!=\"POD\"}[5m]))",
+              "legendFormat": "{{ `{{` }}namespace{{ `}}` }}"
             }
           ],
           "fieldConfig": {
             "defaults": {
-              "unit": "percent",
-              "min": 0,
-              "max": 100
+              "unit": "cores"
             }
           }
         },
         {
           "id": 6,
-          "title": "Memory Usage",
+          "title": "Memory Usage by Namespace",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
             "uid": "prom1"
           },
           "gridPos": {
-            "h": 8,
+            "h": 9,
             "w": 12,
             "x": 12,
             "y": 5
@@ -176,62 +154,59 @@ spec:
           "targets": [
             {
               "refId": "A",
-              "expr": "100 * (1 - sum(node_memory_MemAvailable_bytes) / sum(node_memory_MemTotal_bytes))",
-              "legendFormat": "Cluster Memory"
+              "expr": "sum by(namespace) (container_memory_working_set_bytes{container!=\"\",container!=\"POD\"})",
+              "legendFormat": "{{ `{{` }}namespace{{ `}}` }}"
             }
           ],
           "fieldConfig": {
             "defaults": {
-              "unit": "percent",
-              "min": 0,
-              "max": 100
+              "unit": "bytes"
             }
           }
         },
         {
           "id": 7,
-          "title": "Running Pods",
+          "title": "Pod Restarts by Namespace",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
             "uid": "prom1"
           },
           "gridPos": {
-            "h": 8,
+            "h": 9,
             "w": 12,
             "x": 0,
-            "y": 13
+            "y": 14
           },
           "targets": [
             {
               "refId": "A",
-              "expr": "count(kube_pod_status_phase{phase=\"Running\"})",
-              "legendFormat": "Running"
+              "expr": "sum by(namespace) (increase(kube_pod_container_status_restarts_total[1h]))",
+              "legendFormat": "{{ `{{` }}namespace{{ `}}` }}"
             }
           ]
         },
         {
           "id": 8,
-          "title": "Pod Restarts",
+          "title": "Pending Pods",
           "type": "timeseries",
           "datasource": {
             "type": "prometheus",
             "uid": "prom1"
           },
           "gridPos": {
-            "h": 8,
+            "h": 9,
             "w": 12,
             "x": 12,
-            "y": 13
+            "y": 14
           },
           "targets": [
             {
               "refId": "A",
-              "expr": "sum(increase(kube_pod_container_status_restarts_total[1h]))",
-              "legendFormat": "Restarts / hour"
+              "expr": "sum by(namespace) (kube_pod_status_phase{phase=\"Pending\"})",
+              "legendFormat": "{{ `{{` }}namespace{{ `}}` }}"
             }
           ]
         }
       ]
     }
-
