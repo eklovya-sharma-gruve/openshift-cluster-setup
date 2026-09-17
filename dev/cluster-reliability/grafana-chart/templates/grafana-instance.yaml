@@ -12,5 +12,4 @@ spec:
       admin_password: secret
   serviceAccount:
     automountServiceAccountToken: true
-    metadata:
-      name: grafana-prometheus
+
