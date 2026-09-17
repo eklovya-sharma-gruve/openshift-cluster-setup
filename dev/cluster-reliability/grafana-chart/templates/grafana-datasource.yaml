@@ -10,7 +10,7 @@ spec:
   datasource:
     name: prom1
     type: prometheus
-    url: http://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091
+    url: https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091
     isDefault: true
     jsonData:
       'tlsSkipVerify': true
