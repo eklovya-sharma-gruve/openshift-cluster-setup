@@ -12,6 +12,9 @@ spec:
     type: prometheus
     url: https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091
     isDefault: true
+    secureJsonData:
+      httpHeaderValue1: $__file{/var/run/secrets/prometheus/token}
     jsonData:
-      'tlsSkipVerify': true
-      'timeInterval': "5s"
+      httpHeaderName1: Authorization
+      timeInterval: 5s
+      tlsSkipVerify: true

@@ -10,3 +10,6 @@ spec:
     security:
       admin_user: root
       admin_password: secret
+  serviceAccount:
+    metadata:
+      name: grafana-prometheus
