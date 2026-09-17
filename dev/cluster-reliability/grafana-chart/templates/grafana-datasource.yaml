@@ -22,5 +22,3 @@ spec:
       httpHeaderName1: Authorization
       tlsSkipVerify: true
       timeInterval: 5s
-    secureJsonData:
-      httpHeaderValue1: "${authorization}"
