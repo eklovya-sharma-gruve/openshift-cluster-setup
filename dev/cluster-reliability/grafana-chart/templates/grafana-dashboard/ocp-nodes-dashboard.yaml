@@ -44,7 +44,7 @@ spec:
             {
               "refId": "A",
               "expr": "100 * (1 - avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])))",
-              "legendFormat": "{{instance}}"
+              "legendFormat": "{{ `{{` }}instance{{ `}}` }}"
             }
           ],
           "fieldConfig": {
@@ -73,7 +73,7 @@ spec:
             {
               "refId": "A",
               "expr": "100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)",
-              "legendFormat": "{{instance}}"
+              "legendFormat": "{{ `{{` }}instance{{ `}}` }}"
             }
           ],
           "fieldConfig": {
@@ -102,7 +102,7 @@ spec:
             {
               "refId": "A",
               "expr": "node_load5",
-              "legendFormat": "{{instance}}"
+              "legendFormat": "{{ `{{` }}instance{{ `}}` }}"
             }
           ]
         },
@@ -124,7 +124,7 @@ spec:
             {
               "refId": "A",
               "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!=\"\",mountpoint!=\"/boot\"} / node_filesystem_size_bytes{fstype!=\"\",mountpoint!=\"/boot\"})",
-              "legendFormat": "{{instance}} {{mountpoint}}"
+              "legendFormat": "{{ `{{` }}instance{{ `}}` }} {{ `{{` }}mountpoint{{ `}}` }}"
             }
           ],
           "fieldConfig": {
@@ -153,7 +153,7 @@ spec:
             {
               "refId": "A",
               "expr": "sum by(instance) (rate(node_network_receive_bytes_total{device!=\"lo\"}[5m]))",
-              "legendFormat": "{{instance}}"
+              "legendFormat": "{{ `{{` }}instance{{ `}}` }}"
             }
           ],
           "fieldConfig": {
@@ -180,7 +180,7 @@ spec:
             {
               "refId": "A",
               "expr": "sum by(instance) (rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m]))",
-              "legendFormat": "{{instance}}"
+              "legendFormat": "{{ `{{` }}instance{{ `}}` }}"
             }
           ],
           "fieldConfig": {
