@@ -14,5 +14,9 @@ spec:
   installPlanApproval: "Manual"
   sourceNamespace: "openshift-marketplace"
   startingCSV: opentelemetry-operator.v0.152.0-3
+  config:
+    env:
+      - name: FEATURE_GATES
+        value: operand.networkpolicy
 ---
 {{ end }}
