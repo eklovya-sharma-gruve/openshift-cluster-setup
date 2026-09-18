@@ -11,9 +11,8 @@ spec:
   channel: "{{ .operator_channel }}"
   name: "{{ .operator_name }}"
   source: "redhat-operators"
-  installPlanApproval: "Manual"
+  installPlanApproval: "Automatic"
   sourceNamespace: "openshift-marketplace"
-  startingCSV: opentelemetry-operator.v0.152.0-3
   config:
     env:
       - name: FEATURE_GATES
