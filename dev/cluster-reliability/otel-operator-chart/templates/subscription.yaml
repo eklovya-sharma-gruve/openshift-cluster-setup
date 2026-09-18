@@ -11,7 +11,8 @@ spec:
   channel: "{{ .operator_channel }}"
   name: "{{ .operator_name }}"
   source: "redhat-operators"
-  installPlanApproval: "Automatic"
+  installPlanApproval: "Manual"
   sourceNamespace: "openshift-marketplace"
+  startingCSV: opentelemetry-operator.v0.152.0-3
 ---
 {{ end }}
