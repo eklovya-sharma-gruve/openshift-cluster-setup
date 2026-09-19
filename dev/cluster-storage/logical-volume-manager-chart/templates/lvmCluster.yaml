@@ -10,11 +10,11 @@ spec:
         default: true
         deviceSelector:
           paths:
-            - /dev/sdb
+            - /dev/sdc
         fstype: xfs
         thinPoolConfig:
           name: thin-pool-1
-          sizePercent: 90
+          sizePercent: 45
           overprovisionRatio: 10
         nodeSelector:
           nodeSelectorTerms:
