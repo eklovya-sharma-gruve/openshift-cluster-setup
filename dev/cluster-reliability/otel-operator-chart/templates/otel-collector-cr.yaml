@@ -1,0 +1,26 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: otlp-app-sidecar
+  namespace: openshift-opentelemetry
+spec:
+  mode: daemonset
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc: {}
+    processors:
+      batch: {}
+    exporters:
+      prometheusremotewrite:
+        endpoint: "http://prometheus-server.prometheus.svc.cluster.local/api/v1/write"
+    service:
+      pipelines:
+        metrics:
+          receivers:
+            - otlp
+          processors:
+            - batch
+          exporters:
+            - prometheusremotewrite
